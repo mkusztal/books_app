@@ -3,18 +3,18 @@
 
   // reference to template of 'template-book' and list 'book-list'
   const select = {
-    template: {
+    templateOf: {
       bookProduct: '#template-book',
     },
-    container: {
+    containerOf: {
       bookList: '#book-list',
     },
   };
 
   // set up templated that compline from select object
   const templates = {
-    product: Handlerbars.compile(
-      document.querySelector(select.template.bookProduct).innerHTML
+    menuProduct: Handlerbars.compile(
+      document.querySelector(select.templateOf.bookProduct).innerHTML
     ),
   };
 
@@ -28,15 +28,15 @@
       const books = dataBooks[book];
 
       // generate html about data of data books
-      const generatedHTML = templates.product(dataBooks);
+      const generatedHTML = templates.product(books);
 
       // generate element DOM of generated HTML
       thisBook.book = utils.createDOMFromHTML(generatedHTML);
 
-      const bookContainer = document.querySelector(select.container.bookList);
+      const bookContainer = document.querySelector(select.containerOf.bookList);
       bookContainer.appendChild(thisBook.book);
     }
-
-    render();
   }
+
+  render();
 }
