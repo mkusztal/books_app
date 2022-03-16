@@ -26,6 +26,7 @@
     for (const book of dataBooks) {
       // search elements of 'dataSource.books'
       const books = dataBooks[book];
+      console.log(books);
 
       // generate html about data of data books
       const generatedHTML = templates.product(books);
