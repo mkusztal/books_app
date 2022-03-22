@@ -10,7 +10,7 @@
       bookList: '.books-list',
     },
     elements: {
-      bookImage: '.book-image',
+      bookImage: '.book__image',
       dataId: 'data-id',
     },
     class: {
@@ -55,10 +55,17 @@
       select.elements.bookImage
     );
 
-    thisFavorite.bookList.addEventListener('dclick', function (event) {
-      event.preventDefault();
+    for (let i = 0; i < thisFavorite.bookImages.length; i++) {
+      thisFavorite.bookImages[i].addEventListener('click', () => {
+        console.log('bookImage: ', thisFavorite.bookImages[i]);
+      });
+    }
 
+    thisFavorite.bookList.addEventListener('dblclick', function (event) {
+      event.preventDefault();
       favoriteBooks.push(select.elements.dataId);
     });
   };
+
+  initActions();
 }
