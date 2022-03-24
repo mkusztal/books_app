@@ -12,10 +12,17 @@
     elements: {
       bookImage: '.book__image',
       dataId: 'data-id',
+      hidden: 'hidden',
     },
-    class: {
-      favorite: 'favourite',
-    },
+  };
+
+  const className = {
+    bookFavorite: 'favorite',
+  };
+
+  const form = {
+    forms: '.filters',
+    filtersValue: 'value',
   };
 
   // set up templated that compline from select object
@@ -29,6 +36,7 @@
   };
 
   const favoriteBooks = [];
+  const filters = [];
 
   const render = function () {
     const thisBook = this;
@@ -55,16 +63,67 @@
       select.elements.bookImage
     );
 
-    for (let i = 0; i < thisFavorite.bookImages.length; i++) {
-      thisFavorite.bookImages[i].addEventListener('click', () => {
-        console.log('bookImage: ', thisFavorite.bookImages[i]);
+    thisFavorite.filteredBook = document.querySelector(form.forms);
+
+    for (let bookImage of thisFavorite.bookImages) {
+      bookImage.addEventListener('dblclick', (event) => {
+        if (
+          event.target.offsetParent.classList.contains(
+            select.elements.bookImage
+          )
+        ) {
+          event.preventDefault();
+        } else {
+          bookImage.classList.toggle(className.bookFavorite);
+          console.log('bookImage: ', bookImage);
+          favoriteBooks.push(select.elements.dataId);
+        }
       });
     }
 
-    thisFavorite.bookList.addEventListener('dblclick', function (event) {
+    thisFavorite.filteredBook.addEventListener('click', (event) => {
       event.preventDefault();
-      favoriteBooks.push(select.elements.dataId);
+
+      if (event.target.type == 'checkbox') {
+        if (event.target.checked == true) {
+          filters.push(event.target.value);
+        } else {
+          filters.splice(filters.indexOf(event.target.value));
+        }
+      }
     });
+
+    thisFavorite.filters.addEventListener('click', function (event) {
+      event.preventDefault();
+      filterBooks();
+    });
+  };
+
+  const filterBooks = function () {
+    //const thisfilterBooks = this;
+    const bookId = [];
+
+    let shouldBeHidden = false;
+
+    for (const book in dataSource.books) {
+      for (let filter of filters) {
+        if (!book.details[filter]) {
+          shouldBeHidden = true;
+          bookId.push(book.id);
+          break;
+        }
+      }
+
+      const bookImageElem = document.querySelector(
+        '.book__image[data-id="id-of-the-book-here"]'
+      );
+
+      if (bookId.includes(book.id)) {
+        bookImageElem.classList.add(select.elements.hidden);
+      } else {
+        bookImageElem.classList.remove(select.elements.hidden);
+      }
+    }
   };
 
   initActions();
