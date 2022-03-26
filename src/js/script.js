@@ -88,7 +88,7 @@
         if (event.target.checked == true) {
           filters.push(event.target.value);
         } else if (filters.includes(event.target.value)) {
-          filters.splice(filters.indexOf(event.target.value));
+          filters.splice(filters.indexOf(event.target.value), 1);
         }
       }
 
@@ -99,7 +99,7 @@
   const filterBooks = function () {
     const bookId = [];
 
-    for (let book in dataSource.books) {
+    for (let book of dataSource.books) {
       let shouldBeHidden = false;
 
       for (let filter of filters) {
@@ -111,7 +111,7 @@
       }
 
       const bookImageElem = document.querySelector(
-        '.book__image[data-id="id-of-the-book-here"]'
+        '[data-id="' + book.id + '"]'
       );
 
       if (shouldBeHidden == true) {
