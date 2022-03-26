@@ -14,15 +14,14 @@
       dataId: 'data-id',
       hidden: 'hidden',
     },
+    filters: {
+      filter: '.filters',
+      filtersValue: 'value',
+    },
   };
 
   const className = {
     bookFavorite: 'favorite',
-  };
-
-  const form = {
-    forms: '.filters',
-    filtersValue: 'value',
   };
 
   // set up templated that compline from select object
@@ -63,7 +62,7 @@
       select.elements.bookImage
     );
 
-    thisFavorite.filteredBook = document.querySelector(form.forms);
+    thisFavorite.filteredBook = document.querySelector(select.filters.filter);
 
     for (let bookImage of thisFavorite.bookImages) {
       bookImage.addEventListener('dblclick', (event) => {
@@ -84,28 +83,25 @@
     thisFavorite.filteredBook.addEventListener('click', (event) => {
       event.preventDefault();
 
+      favoriteBooks.push(select.elements.dataId);
       if (event.target.type == 'checkbox') {
         if (event.target.checked == true) {
           filters.push(event.target.value);
-        } else {
+        } else if (filters.includes(event.target.value)) {
           filters.splice(filters.indexOf(event.target.value));
         }
       }
-    });
 
-    thisFavorite.filters.addEventListener('click', function (event) {
-      event.preventDefault();
       filterBooks();
     });
   };
 
   const filterBooks = function () {
-    //const thisfilterBooks = this;
     const bookId = [];
 
-    let shouldBeHidden = false;
+    for (let book in dataSource.books) {
+      let shouldBeHidden = false;
 
-    for (const book in dataSource.books) {
       for (let filter of filters) {
         if (!book.details[filter]) {
           shouldBeHidden = true;
@@ -118,9 +114,9 @@
         '.book__image[data-id="id-of-the-book-here"]'
       );
 
-      if (bookId.includes(book.id)) {
+      if (shouldBeHidden == true) {
         bookImageElem.classList.add(select.elements.hidden);
-      } else {
+      } else if (shouldBeHidden == false) {
         bookImageElem.classList.remove(select.elements.hidden);
       }
     }
