@@ -65,6 +65,9 @@
     thisFavorite.filteredBook = document.querySelector(select.filters.filter);
 
     for (let bookImage of thisFavorite.bookImages) {
+      bookImage.ratingBgc = determineRatingBgc(bookImage.rating);
+      bookImage.ratingWidth = bookImage.rating * 100;
+
       bookImage.addEventListener('dblclick', (event) => {
         if (
           event.target.offsetParent.classList.contains(
@@ -81,8 +84,6 @@
     }
 
     thisFavorite.filteredBook.addEventListener('click', (event) => {
-      event.preventDefault();
-
       favoriteBooks.push(select.elements.dataId);
       if (event.target.type == 'checkbox') {
         if (event.target.checked == true) {
@@ -123,4 +124,19 @@
   };
 
   initActions();
+
+  const determineRatingBgc = function (rating) {
+    let ratingBgc = '';
+
+    if (rating < 6) {
+      ratingBgc = 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%);';
+    } else if (rating > 6 && rating <= 8) {
+      ratingBgc = 'linear-gradient(to bottom, #b4df5b 0%,#b4df5b 100%)';
+    } else if (rating > 8 && rating <= 9) {
+      ratingBgc = 'linear-gradient(to bottom, #299a0b 0%, #299a0b 100%)';
+    } else if (rating > 9) {
+      ratingBgc = 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
+    }
+    return ratingBgc;
+  };
 }
