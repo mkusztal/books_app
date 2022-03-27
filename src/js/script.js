@@ -41,6 +41,9 @@
     const thisBook = this;
 
     for (const book of dataSource.books) {
+      book.ratingBgc = determineRatingBgc(book.rating);
+      book.ratingWidth = book.rating * 10;
+
       // generate html about data of data books
       const generatedHTML = templates.bookProduct(book);
 
@@ -51,8 +54,6 @@
       bookContainer.appendChild(thisBook.book);
     }
   };
-
-  render();
 
   const initActions = function () {
     const thisFavorite = this;
@@ -65,9 +66,6 @@
     thisFavorite.filteredBook = document.querySelector(select.filters.filter);
 
     for (let bookImage of thisFavorite.bookImages) {
-      bookImage.ratingBgc = determineRatingBgc(bookImage.rating);
-      bookImage.ratingWidth = bookImage.rating * 100;
-
       bookImage.addEventListener('dblclick', (event) => {
         if (
           event.target.offsetParent.classList.contains(
@@ -123,8 +121,6 @@
     }
   };
 
-  initActions();
-
   const determineRatingBgc = function (rating) {
     let ratingBgc = '';
 
@@ -139,4 +135,7 @@
     }
     return ratingBgc;
   };
+
+  render();
+  initActions();
 }
