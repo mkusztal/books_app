@@ -1,6 +1,4 @@
-{
-  ('use strict');
-
+class BooksList{
   // reference to template of 'template-book' and list 'book-list'
   const select = {
     templateOf: {
@@ -18,14 +16,13 @@
       filter: '.filters',
       filtersValue: 'value',
     },
-  };
-
-  const className = {
-    bookFavorite: 'favorite',
+    className: {
+      bookFavorite: 'favorite',
+    }
   };
 
   // set up templated that compline from select object
-  const templates = {
+   templates = {
     bookProduct: Handlebars.compile(
       document.querySelector(select.templateOf.bookProduct).innerHTML
     ),
@@ -34,10 +31,25 @@
     ),
   };
 
-  const favoriteBooks = [];
-  const filters = [];
+  favoriteBooks = [];
+  filters = [];
 
-  const render = function () {
+  getElements(){
+    const thisBook = this;
+
+    thisBook.dom = {
+      bookProduct: document.querySelector(select.templateOf.bookProduct),
+      bookList: document.querySelector(select.containerOf.bookList),
+      bookImages: document.querySelectorAll(select.elements.bookImage),
+      bookDataId: document.querySelector(select.elements.dataId),
+      bookHidden: document.querySelector(select.elements.hidden),
+      bookFilter: document.querySelector(select.filters.filter),
+      bookFilterValue: document.querySelector(select.filters.filtersValue),
+      bookFavorite: document.querySelector(select.className.bookFavorite),
+    }
+  }
+
+  render = function () {
     const thisBook = this;
 
     for (const book of dataSource.books) {
@@ -50,22 +62,22 @@
       // generate element DOM of generated HTML
       thisBook.book = utils.createDOMFromHTML(generatedHTML);
 
-      const bookContainer = document.querySelector(select.containerOf.bookList);
-      bookContainer.appendChild(thisBook.book);
+      //const bookContainer = document.querySelector(select.containerOf.bookList);
+      thisBook.dom.bookList.appendChild(thisBook.book);
     }
   };
 
-  const initActions = function () {
+  initActions = function () {
     const thisFavorite = this;
 
-    thisFavorite.bookList = document.querySelector(select.containerOf.bookList);
-    thisFavorite.bookImages = thisFavorite.bookList.querySelectorAll(
-      select.elements.bookImage
-    );
+    //thisFavorite.bookList = document.querySelector(select.containerOf.bookList);
+    //thisFavorite.bookImages = thisFavorite.dom.bookList.querySelectorAll(
+    //  select.elements.bookImage
+    //);
 
-    thisFavorite.filteredBook = document.querySelector(select.filters.filter);
+    //thisFavorite.filteredBook = document.querySelector(select.filters.filter);
 
-    for (let bookImage of thisFavorite.bookImages) {
+    for (let bookImage of thisFavorite.dom.bookImages) {
       bookImage.addEventListener('dblclick', (event) => {
         if (
           event.target.offsetParent.classList.contains(
@@ -74,14 +86,14 @@
         ) {
           event.preventDefault();
         } else {
-          bookImage.classList.toggle(className.bookFavorite);
+          bookImage.classList.toggle(select.className.bookFavorite);
           console.log('bookImage: ', bookImage);
           favoriteBooks.push(select.elements.dataId);
         }
       });
     }
 
-    thisFavorite.filteredBook.addEventListener('click', (event) => {
+    thisFavorite.dom.bookFilter.addEventListener('click', (event) => {
       favoriteBooks.push(select.elements.dataId);
       if (event.target.type == 'checkbox') {
         if (event.target.checked == true) {
@@ -95,7 +107,7 @@
     });
   };
 
-  const filterBooks = function () {
+  filterBooks = function () {
     const bookId = [];
 
     for (let book of dataSource.books) {
@@ -121,7 +133,7 @@
     }
   };
 
-  const determineRatingBgc = function (rating) {
+  determineRatingBgc = function (rating) {
     let ratingBgc = '';
 
     if (rating < 6) {
