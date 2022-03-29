@@ -1,63 +1,76 @@
-class BooksList{
-  // reference to template of 'template-book' and list 'book-list'
-  const select = {
-    templateOf: {
-      bookProduct: '#template-book',
-    },
-    containerOf: {
-      bookList: '.books-list',
-    },
-    elements: {
-      bookImage: '.book__image',
-      dataId: 'data-id',
-      hidden: 'hidden',
-    },
-    filters: {
-      filter: '.filters',
-      filtersValue: 'value',
-    },
-    className: {
-      bookFavorite: 'favorite',
-    }
-  };
+class BooksList {
+  constructor() {
+    const thisBook = this;
 
-  // set up templated that compline from select object
-   templates = {
-    bookProduct: Handlebars.compile(
-      document.querySelector(select.templateOf.bookProduct).innerHTML
-    ),
-    bookList: Handlebars.compile(
-      document.querySelector(select.containerOf.bookList).innerHTML
-    ),
-  };
+    thisBook.render();
+    thisBook.initActions();
 
-  favoriteBooks = [];
-  filters = [];
+    // reference to template of 'template-book' and list 'book-list'
+    const select = {
+      templateOf: {
+        bookProduct: '#template-book',
+      },
+      containerOf: {
+        bookList: '.books-list',
+      },
+      elements: {
+        bookImage: '.book__image',
+        dataId: 'data-id',
+        hidden: 'hidden',
+      },
+      filters: {
+        filter: '.filters',
+        filtersValue: 'value',
+      },
+      className: {
+        bookFavorite: 'favorite',
+      },
+    };
 
-  getElements(){
+    // set up templated that compline from select object
+    const templates = {
+      bookProduct: Handlebars.compile(
+        document.querySelector(select.templateOf.bookProduct).innerHTML
+      ),
+      bookList: Handlebars.compile(
+        document.querySelector(select.containerOf.bookList).innerHTML
+      ),
+    };
+
+    thisBook.favoriteBooks = [];
+    thisBook.filters = [];
+  }
+
+  getElements() {
     const thisBook = this;
 
     thisBook.dom = {
-      bookProduct: document.querySelector(select.templateOf.bookProduct),
-      bookList: document.querySelector(select.containerOf.bookList),
-      bookImages: document.querySelectorAll(select.elements.bookImage),
-      bookDataId: document.querySelector(select.elements.dataId),
-      bookHidden: document.querySelector(select.elements.hidden),
-      bookFilter: document.querySelector(select.filters.filter),
-      bookFilterValue: document.querySelector(select.filters.filtersValue),
-      bookFavorite: document.querySelector(select.className.bookFavorite),
-    }
+      bookProduct: document.querySelector(
+        thisBook.select.templateOf.bookProduct
+      ),
+      bookList: document.querySelector(thisBook.select.containerOf.bookList),
+      bookImages: document.querySelectorAll(thisBook.select.elements.bookImage),
+      bookDataId: document.querySelector(thisBook.select.elements.dataId),
+      bookHidden: document.querySelector(thisBook.select.elements.hidden),
+      bookFilter: document.querySelector(thisBook.select.filters.filter),
+      bookFilterValue: document.querySelector(
+        thisBook.select.filters.filtersValue
+      ),
+      bookFavorite: document.querySelector(
+        thisBook.select.className.bookFavorite
+      ),
+    };
   }
 
-  render = function () {
+  render() {
     const thisBook = this;
 
     for (const book of dataSource.books) {
-      book.ratingBgc = determineRatingBgc(book.rating);
+      book.ratingBgc = thisBook.determineRatingBgc(book.rating);
       book.ratingWidth = book.rating * 10;
 
       // generate html about data of data books
-      const generatedHTML = templates.bookProduct(book);
+      const generatedHTML = thisBook.templates.bookProduct(book);
 
       // generate element DOM of generated HTML
       thisBook.book = utils.createDOMFromHTML(generatedHTML);
@@ -65,10 +78,10 @@ class BooksList{
       //const bookContainer = document.querySelector(select.containerOf.bookList);
       thisBook.dom.bookList.appendChild(thisBook.book);
     }
-  };
+  }
 
-  initActions = function () {
-    const thisFavorite = this;
+  initActions() {
+    const thisBook = this;
 
     //thisFavorite.bookList = document.querySelector(select.containerOf.bookList);
     //thisFavorite.bookImages = thisFavorite.dom.bookList.querySelectorAll(
@@ -77,43 +90,47 @@ class BooksList{
 
     //thisFavorite.filteredBook = document.querySelector(select.filters.filter);
 
-    for (let bookImage of thisFavorite.dom.bookImages) {
+    for (let bookImage of thisBook.dom.bookImages) {
       bookImage.addEventListener('dblclick', (event) => {
         if (
           event.target.offsetParent.classList.contains(
-            select.elements.bookImage
+            thisBook.select.elements.bookImage
           )
         ) {
           event.preventDefault();
         } else {
-          bookImage.classList.toggle(select.className.bookFavorite);
+          bookImage.classList.toggle(thisBook.select.className.bookFavorite);
           console.log('bookImage: ', bookImage);
-          favoriteBooks.push(select.elements.dataId);
+          thisBook.favoriteBooks.push(thisBook.select.elements.dataId);
         }
       });
     }
 
-    thisFavorite.dom.bookFilter.addEventListener('click', (event) => {
-      favoriteBooks.push(select.elements.dataId);
+    thisBook.dom.bookFilter.addEventListener('click', (event) => {
+      thisBook.favoriteBooks.push(thisBook.select.elements.dataId);
       if (event.target.type == 'checkbox') {
         if (event.target.checked == true) {
-          filters.push(event.target.value);
-        } else if (filters.includes(event.target.value)) {
-          filters.splice(filters.indexOf(event.target.value), 1);
+          thisBook.filters.push(event.target.value);
+        } else if (thisBook.filters.includes(event.target.value)) {
+          thisBook.filters.splice(
+            thisBook.filters.indexOf(event.target.value),
+            1
+          );
         }
       }
 
-      filterBooks();
+      thisBook.filterBooks();
     });
-  };
+  }
 
-  filterBooks = function () {
+  filterBooks() {
+    const thisBook = this;
     const bookId = [];
 
     for (let book of dataSource.books) {
       let shouldBeHidden = false;
 
-      for (let filter of filters) {
+      for (let filter of thisBook.filters) {
         if (!book.details[filter]) {
           shouldBeHidden = true;
           bookId.push(book.id);
@@ -126,14 +143,14 @@ class BooksList{
       );
 
       if (shouldBeHidden == true) {
-        bookImageElem.classList.add(select.elements.hidden);
+        bookImageElem.classList.add(thisBook.select.elements.hidden);
       } else if (shouldBeHidden == false) {
-        bookImageElem.classList.remove(select.elements.hidden);
+        bookImageElem.classList.remove(thisBook.select.elements.hidden);
       }
     }
-  };
+  }
 
-  determineRatingBgc = function (rating) {
+  determineRatingBgc(rating) {
     let ratingBgc = '';
 
     if (rating < 6) {
@@ -146,8 +163,5 @@ class BooksList{
       ratingBgc = 'linear-gradient(to bottom, #ff0084 0%,#ff0084 100%)';
     }
     return ratingBgc;
-  };
-
-  render();
-  initActions();
+  }
 }
