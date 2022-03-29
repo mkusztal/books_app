@@ -1,9 +1,14 @@
+('use strict');
+
 class BooksList {
   constructor() {
     const thisBook = this;
 
-    thisBook.render();
+    thisBook.initData();
+    thisBook.getElements();
     thisBook.initActions();
+    thisBook.filterBooks();
+    thisBook.determineRatingBgc();
 
     // reference to template of 'template-book' and list 'book-list'
     const select = {
@@ -28,17 +33,18 @@ class BooksList {
     };
 
     // set up templated that compline from select object
-    const templates = {
+    thisBook.templates = {
       bookProduct: Handlebars.compile(
         document.querySelector(select.templateOf.bookProduct).innerHTML
-      ),
-      bookList: Handlebars.compile(
-        document.querySelector(select.containerOf.bookList).innerHTML
       ),
     };
 
     thisBook.favoriteBooks = [];
     thisBook.filters = [];
+  }
+
+  initData() {
+    this.data = dataSource.books;
   }
 
   getElements() {
@@ -82,13 +88,6 @@ class BooksList {
 
   initActions() {
     const thisBook = this;
-
-    //thisFavorite.bookList = document.querySelector(select.containerOf.bookList);
-    //thisFavorite.bookImages = thisFavorite.dom.bookList.querySelectorAll(
-    //  select.elements.bookImage
-    //);
-
-    //thisFavorite.filteredBook = document.querySelector(select.filters.filter);
 
     for (let bookImage of thisBook.dom.bookImages) {
       bookImage.addEventListener('dblclick', (event) => {
@@ -165,3 +164,6 @@ class BooksList {
     return ratingBgc;
   }
 }
+
+// eslint-disable-next-line no-unused-vars
+const app = new BooksList();
