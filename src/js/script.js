@@ -4,14 +4,8 @@ class BooksList {
   constructor() {
     const thisBook = this;
 
-    thisBook.initData();
-    thisBook.getElements();
-    thisBook.initActions();
-    thisBook.filterBooks();
-    thisBook.determineRatingBgc();
-
     // reference to template of 'template-book' and list 'book-list'
-    const select = {
+    thisBook.select = {
       templateOf: {
         bookProduct: '#template-book',
       },
@@ -35,16 +29,26 @@ class BooksList {
     // set up templated that compline from select object
     thisBook.templates = {
       bookProduct: Handlebars.compile(
-        document.querySelector(select.templateOf.bookProduct).innerHTML
+        document.querySelector(thisBook.select.templateOf.bookProduct).innerHTML
       ),
     };
 
     thisBook.favoriteBooks = [];
     thisBook.filters = [];
+
+    thisBook.initData();
+    thisBook.getElements();
+    thisBook.initActions();
+    thisBook.filterBooks();
+    thisBook.determineRatingBgc();
   }
 
   initData() {
-    this.data = dataSource.books;
+    const thisBook = this;
+
+    thisBook.data = dataSource.books;
+
+    thisBook.render();
   }
 
   getElements() {
@@ -56,7 +60,6 @@ class BooksList {
       ),
       bookList: document.querySelector(thisBook.select.containerOf.bookList),
       bookImages: document.querySelectorAll(thisBook.select.elements.bookImage),
-      bookDataId: document.querySelector(thisBook.select.elements.dataId),
       bookHidden: document.querySelector(thisBook.select.elements.hidden),
       bookFilter: document.querySelector(thisBook.select.filters.filter),
       bookFilterValue: document.querySelector(
@@ -81,8 +84,10 @@ class BooksList {
       // generate element DOM of generated HTML
       thisBook.book = utils.createDOMFromHTML(generatedHTML);
 
-      //const bookContainer = document.querySelector(select.containerOf.bookList);
-      thisBook.dom.bookList.appendChild(thisBook.book);
+      const bookContainer = document.querySelector(
+        thisBook.select.containerOf.bookList
+      );
+      bookContainer.appendChild(thisBook.book);
     }
   }
 
